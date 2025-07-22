@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 
 # Define the paths for input and output files
 input_file_path = "stock_codes.txt"          # Relative path
@@ -9,8 +9,6 @@ url = "https://www3.hkexnews.hk/sdw/search/searchsdw.aspx"
 with open(input_file_path, 'r') as file:
     stock_codes = file.read().splitlines()
 
-# Open the output file for writing
-with open(output_file_path, 'w') as output_file:
     # Loop through each stock code and submit the request
     for stock_code in stock_codes:
         payload = {
