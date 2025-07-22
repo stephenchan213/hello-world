@@ -29,7 +29,7 @@ def process_stock_code(stock_code):
                 file.write(response.text)
             print(f"[{stock_code}] Response body written to response{stock_code}.txt")
 
-            soup = BeautifulSoup(response.text, "lxml")
+            soup = BeautifulSoup(response.text, "html.parser")
             table = soup.find("table", class_="table table-scroll table-sort table-mobile-list")
             if not table:
                 print(f"[{stock_code}] Table not found.")
