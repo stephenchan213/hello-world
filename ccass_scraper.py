@@ -1,4 +1,5 @@
 import requests
+import csv
 from bs4 import BeautifulSoup
 
 # Define the paths for input and output files
@@ -36,5 +37,27 @@ for stock_code in stock_codes:
             # Write the response body to the file
             file.write(response.text)
         print("Response body written to response" + stock_code + ".txt")
+        
+        # Parse HTML
+        soup = BeautifulSoup(response.text, "lxml")
+        table = soup.find("table", class_="table table-scroll table-sort table-mobile-list")
+
+        # Extract headers
+        headers = [th.get_text(strip=True) for th in table.find("thead").find_all("th")]
+
+        # Extract rows
+        rows = []
+        for tr in table.find("tbody").find_all("tr"):
+            row = [td.get_text(strip=True) for td in tr.find_all("td")]
+            rows.append(row)
+
+        # Write to CSV
+        with open("output" + stock_code + ".csv", "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(headers)
+            writer.writerows(rows)
+
+        print("CSV file 'output" + stock_code + ".csv' created successfully.")
+
     else:
         print(f"Request failed with status code: {response.status_code}")
