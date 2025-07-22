@@ -18,7 +18,8 @@ with open(input_file_path, 'r') as file:
 
 # Loop through each stock code and submit the request
 #for stock_code in stock_codes:
-stock_code = '00005'
+stock_code = "00005"
+
     payload = {
         'today': '20250722',
         'txtStockCode': stock_code,
