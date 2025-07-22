@@ -16,6 +16,7 @@ with open(input_file_path, 'r') as file:
             'txtStockCode': stock_code,
             '__EVENTTARGET': 'btnSearch',
             'txtShareholdingDate': '20250721',
+            'originalShareholdingDate': '20250721',
             'submit': 'Search'
             # Add other parameters as needed
         }
@@ -23,12 +24,12 @@ with open(input_file_path, 'r') as file:
         # Send the POST request
         response = requests.post(url, json=payload)
         
-		# Check if the request was successful
-		if response.status_code == 200:
-			# Open a text file in write mode
-			with open('response' + stock_code + '.txt', 'w') as file:
-				# Write the response body to the file
-				file.write(response.text)
-			print("Response body written to response.txt")
-		else:
-			print(f"Request failed with status code: {response.status_code}")
+	# Check if the request was successful
+	if response.status_code == 200:
+		# Open a text file in write mode
+		with open('response' + stock_code + '.txt', 'w') as file:
+			# Write the response body to the file
+			file.write(response.text)
+		print("Response body written to response" + stock_code + ".txt")
+	else:
+		print(f"Request failed with status code: {response.status_code}")
