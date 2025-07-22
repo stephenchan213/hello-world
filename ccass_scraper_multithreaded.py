@@ -23,7 +23,7 @@ def process_stock_code(stock_code):
     }
 
     try:
-        response = requests.post(url, data=payload, headers=headers, timeout=20)
+        response = requests.post(url, data=payload, headers=headers, timeout=30)
         if response.status_code == 200:
             with open(f'response{stock_code}.txt', 'w', encoding='utf-8') as file:
                 file.write(response.text)
