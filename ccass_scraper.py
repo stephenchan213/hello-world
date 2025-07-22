@@ -1,5 +1,5 @@
 import requests
-#from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 
 # Define the paths for input and output files
 input_file_path = "stock_codes.txt"          # Relative path
