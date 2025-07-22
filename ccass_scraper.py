@@ -41,7 +41,7 @@ if response.status_code == 200:
     print("Response body written to response" + stock_code + ".txt")
     
     # Parse HTML
-    soup = BeautifulSoup(response.text, "lxml")
+    soup = BeautifulSoup(response.text, "html.parser")
     table = soup.find("table", class_="table table-scroll table-sort table-mobile-list")
 
     # Extract headers
