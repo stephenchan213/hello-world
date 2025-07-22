@@ -13,7 +13,7 @@ with open(input_file_path, 'r') as file:
 for stock_code in stock_codes:
     payload = {
         'today':'20250722',
-        'txStockCode': stock_code,
+        'txtStockCode': stock_code,
         '__EVENTTARGET': 'btnSearch',
         'txtShareholdingDate': '2025/07/21',
         'originalShareholdingDate': '2025/07/21',
