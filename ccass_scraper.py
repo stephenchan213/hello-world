@@ -49,9 +49,10 @@ if response.status_code == 200:
 
     # Extract rows
     rows = []
-    for tr in table.find("tbody").find_all("tr"):
-        row = [td.get_text(strip=True) for td in tr.find_all("td")]
-        rows.append(row)
+    for tr in soup.find_all("tr"):
+        row = [div.get_text(strip=True) for div in tr.find_all("div", class_="mobile-list-body")]
+        if row:
+            rows.append(row)
 
     # Write to CSV
     with open("output" + stock_code + ".csv", "w", newline="", encoding="utf-8") as f:
