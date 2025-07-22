@@ -12,15 +12,12 @@ with open(input_file_path, 'r') as file:
 # Loop through each stock code and submit the request
 for stock_code in stock_codes:
     payload = {
-        'today':'20250722',
+        'today': '20250722',
         'txtStockCode': stock_code,
         '__EVENTTARGET': 'btnSearch',
-        '__VIEWSTATE': '/wEPDwULLTE1Nzg3NjcwNjdkZJW3ITBSje1dkFJLjneiDSfdsLh3',
-        '__VIEWSTATEGENERATOR': 'A7B2BBE2',
-        'txtShareholdingDate': '2025/07/21',
         'originalShareholdingDate': '2025/07/21',
+        'txtShareholdingDate': '2025/07/21',
         'submit': 'Search',
-        # Add other parameters as needed
     }
     
     # Send the POST request
