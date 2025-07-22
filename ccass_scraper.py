@@ -18,9 +18,10 @@ with open(input_file_path, 'r') as file:
 
 # Loop through each stock code and submit the request
 #for stock_code in stock_codes:
+stock_code = '00005'
     payload = {
         'today': '20250722',
-        'txtStockCode': '00005',
+        'txtStockCode': stock_code,
         '__EVENTTARGET': 'btnSearch',
         'originalShareholdingDate': '2025/07/21',
         'txtShareholdingDate': '2025/07/21',
