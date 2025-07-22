@@ -17,10 +17,10 @@ with open(input_file_path, 'r') as file:
     stock_codes = file.read().splitlines()
 
 # Loop through each stock code and submit the request
-for stock_code in stock_codes:
+#for stock_code in stock_codes:
     payload = {
         'today': '20250722',
-        'txtStockCode': stock_code,
+        'txtStockCode': '00005',
         '__EVENTTARGET': 'btnSearch',
         'originalShareholdingDate': '2025/07/21',
         'txtShareholdingDate': '2025/07/21',
