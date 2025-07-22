@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Define the paths for input and output files
-input_file_path = "C:/Users/chanSte/OneDrive - Computershare/Documents/stock_codes.txt"          # Relative path
+input_file_path = "stock_codes.txt"          # Relative path
 url = "https://www3.hkexnews.hk/sdw/search/searchsdw.aspx"
 
 # Read stock codes from the input file
