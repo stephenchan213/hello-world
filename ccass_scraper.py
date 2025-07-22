@@ -15,9 +15,9 @@ for stock_code in stock_codes:
         'today':'20250722',
         'txStockCode': stock_code,
         '__EVENTTARGET': 'btnSearch',
-        'txtShareholdingDate': '20250721',
-        'originalShareholdingDate': '20250721',
-        'submit': 'Search'
+        'txtShareholdingDate': '2025/07/21',
+        'originalShareholdingDate': '2025/07/21',
+        'submit': 'Search',
         # Add other parameters as needed
     }
     
