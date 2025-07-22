@@ -15,7 +15,7 @@ with open(output_file_path, 'w') as output_file:
     for stock_code in stock_codes:
         payload = {
             'today':'20250722',
-            'txStockCode': stock_code,
+            'txtStockCode': stock_code,
             '__EVENTTARGET': 'btnSearch',
             'txtShareholdingDate': '20250721',
             'submit': 'Search'
