@@ -15,6 +15,8 @@ for stock_code in stock_codes:
         'today':'20250722',
         'txtStockCode': stock_code,
         '__EVENTTARGET': 'btnSearch',
+        '__VIEWSTATEGENERATOR': '/wEPDwULLTE1Nzg3NjcwNjdkZJW3ITBSje1dkFJLjneiDSfdsLh3',
+        '__VIEWSTATEGENERATOR': 'A7B2BBE2',
         'txtShareholdingDate': '2025/07/21',
         'originalShareholdingDate': '2025/07/21',
         'submit': 'Search',
