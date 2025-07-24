@@ -43,7 +43,8 @@ def process_stock_code(stock_code):
     headers, values = parse_html(html)
     return stock_code, headers, values
 
-stock_codes = ['00001', '00002', '00003']  # Add your stock codes here
+with open(input_file_path, 'r') as file:
+    stock_codes = file.read().splitlines()
 
 results = []
 all_headers_set = set()
