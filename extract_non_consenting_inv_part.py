@@ -1,6 +1,6 @@
 import requests
-import csv
 from bs4 import BeautifulSoup
+import csv
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 input_file_path = "stock_codes.txt"
@@ -12,7 +12,8 @@ headers = {
     'Origin': 'https://www3.hkexnews.hk',
 }
 
-def process_stock_code(stock_code):
+def fetch_html(stock_code):
+    # Replace this URL with your real stock data source
     payload = {
         'today': '20250722',
         'txtStockCode': stock_code,
@@ -21,58 +22,52 @@ def process_stock_code(stock_code):
         'txtShareholdingDate': '2025/07/21',
         'submit': 'Search',
     }
+    response = requests.post(url, data=payload, headers=headers, timeout=30)
+    return response.text
 
-    try:
-        response = requests.post(url, data=payload, headers=headers, timeout=30)
-        if response.status_code == 200:
-            with open(f'response{stock_code}.txt', 'w', encoding='utf-8') as file:
-                file.write(response.text)
-            print(f"[{stock_code}] Response body written to response{stock_code}.txt")
+def parse_html(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    headers = []
+    values = []
+    for section in soup.find_all('div', class_='ccass-search-datarow'):
+        for block in section.find_all(['div'], recursive=False):
+            header = block.find('div', class_='header')
+            value = block.find('div', class_='value')
+            if header and value:
+                headers.append(header.text.strip())
+                values.append(value.text.strip())
+    return headers, values
 
-            soup = BeautifulSoup(html, 'html.parser')
+def process_stock_code(stock_code):
+    html = fetch_html(stock_code)
+    headers, values = parse_html(html)
+    return stock_code, headers, values
 
-            headers = []
-            values = []
-            
-            for section in soup.find_all('div', class_='ccass-search-datarow'):
-                # Only consider child divs with both header and value
-                for block in section.find_all(['div'], recursive=False):
-                    header = block.find('div', class_='header')
-                    value = block.find('div', class_='value')
-                    if header and value:
-                        headers.append(header.text.strip())
-                        values.append(value.text.strip())
-            
-            with open('output.csv', 'w', newline='', encoding='utf-8') as f:
-                writer = csv.writer(f)
-                writer.writerow(headers)
-                writer.writerow(values)
+stock_codes = ['00001', '00002', '00003']  # Add your stock codes here
 
-            # Write to CSV
-            with open(f"output{stock_code}.csv", "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                writer.writerow(table_headers)
-                writer.writerows(rows)
+results = []
+all_headers_set = set()
+with ThreadPoolExecutor(max_workers=5) as executor:
+    futures = {executor.submit(process_stock_code, code): code for code in stock_codes}
+    for future in as_completed(futures):
+        stock_code, headers, values = future.result()
+        results.append({'stock_code': stock_code, 'headers': headers, 'values': values})
+        all_headers_set.update(headers)
 
-            print(f"[{stock_code}] CSV file 'output{stock_code}.csv' created successfully.")
-        else:
-            print(f"[{stock_code}] Request failed with status code: {response.status_code}")
-    except Exception as e:
-        print(f"[{stock_code}] Error: {e}")
+# Prepare consistent header order
+all_headers = ['Stock Code'] + sorted(all_headers_set)
 
-def main():
-    with open(input_file_path, 'r') as file:
-        stock_codes = file.read().splitlines()
+# Aggregate results into rows for CSV
+csv_rows = []
+for res in results:
+    row = {header: '' for header in all_headers}
+    row['Stock Code'] = res['stock_code']
+    for h, v in zip(res['headers'], res['values']):
+        row[h] = v
+    csv_rows.append(row)
 
-    # You can adjust max_workers as needed (e.g. 5, 10, 20)
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        futures = [executor.submit(process_stock_code, stock_code) for stock_code in stock_codes]
-        for future in as_completed(futures):
-            # This will catch exceptions in threads if any
-            try:
-                future.result()
-            except Exception as exc:
-                print(f"Thread generated an exception: {exc}")
-
-if __name__ == "__main__":
-    main()
+with open('all_stocks_output.csv', 'w', newline='', encoding='utf-8') as f:
+    writer = csv.DictWriter(f, fieldnames=all_headers)
+    writer.writeheader()
+    for row in csv_rows:
+        writer.writerow(row)
