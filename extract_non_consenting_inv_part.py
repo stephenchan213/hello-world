@@ -51,9 +51,12 @@ all_headers_set = set()
 with ThreadPoolExecutor(max_workers=5) as executor:
     futures = {executor.submit(process_stock_code, code): code for code in stock_codes}
     for future in as_completed(futures):
-        stock_code, headers, values = future.result()
-        results.append({'stock_code': stock_code, 'headers': headers, 'values': values})
-        all_headers_set.update(headers)
+        try:
+            stock_code, headers, values = future.result()
+            results.append({'stock_code': stock_code, 'headers': headers, 'values': values})
+            all_headers_set.update(headers)
+        except Exception as exc:
+            print(f"Thread generated an exception: {exc}")
 
 # Prepare consistent header order
 all_headers = ['Stock Code'] + sorted(all_headers_set)
