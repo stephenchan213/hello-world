@@ -44,7 +44,7 @@ def process_stock_code(stock_code):
     
                 #data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
     
-                print(f"{header.text.strip()}: {value.text.strip()}") for header, value in zip(headers_divs, values_divs)]
+                print(f"{header.text.strip()}: {value.text.strip()}") for header, value in zip(headers_divs, values_divs)
                 
                 with lock:
                     results.extend(data)
