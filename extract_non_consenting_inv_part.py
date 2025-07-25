@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
 
 input_file_path = "stock_codes.txt"
 url = "https://www3.hkexnews.hk/sdw/search/searchsdw.aspx"
@@ -12,8 +12,18 @@ headers = {
     'Origin': 'https://www3.hkexnews.hk',
 }
 
-def fetch_html(stock_code):
-    # Replace this URL with your real stock data source
+# List of stock codes to process
+with open(input_file_path, 'r') as file:
+    stock_codes = file.read().splitlines()
+
+# Lock for thread-safe writing to shared data
+lock = threading.Lock()
+
+# Shared list to store results
+results = []
+
+# Function to process each stock code
+def process_stock_code(stock_code):
     payload = {
         'today': '20250722',
         'txtStockCode': stock_code,
@@ -21,58 +31,41 @@ def fetch_html(stock_code):
         'originalShareholdingDate': '2025/07/21',
         'txtShareholdingDate': '2025/07/21',
         'submit': 'Search',
-    }
-    response = requests.post(url, data=payload, headers=headers, timeout=50)
-    return response.text
+    }    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
-def parse_html(html):
-    soup = BeautifulSoup(html, 'html.parser')
-    headers = []
-    values = []
-    category = soup.find('div', class_='summary-category')
-    if category and category.text.strip() == "Non-consenting Investor Participants":
-        datarow = category.find_parent('div', class_='ccass-search-datarow')
-        headers = datarow.find_all('div', class_='header')
-        values = datarow.find_all('div', class_='value')
-        if header and value:
-            headers.append(header.text.strip())
-            values.append(value.text.strip())
-    return headers, values
+    try:
+        response = requests.post(url, data=payload, headers=headers, timeout=30)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-def process_stock_code(stock_code):
-    html = fetch_html(stock_code)
-    headers, values = parse_html(html)
-    return stock_code, headers, values
+        category = soup.find('div', class_='summary-category')
+        if category and category.text.strip() == "Non-consenting Investor Participants":
+            datarow = category.find_parent('div', class_='ccass-search-datarow')
+            headers_divs = datarow.find_all('div', class_='header')
+            values_divs = datarow.find_all('div', class_='value')
 
-with open(input_file_path, 'r') as file:
-    stock_codes = file.read().splitlines()
+            data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
 
-results = []
-all_headers_set = set()
-with ThreadPoolExecutor(max_workers=5) as executor:
-    futures = {executor.submit(process_stock_code, code): code for code in stock_codes}
-    for future in as_completed(futures):
-        try:
-            stock_code, headers, values = future.result()
-            results.append({'stock_code': stock_code, 'headers': headers, 'values': values})
-            all_headers_set.update(headers)
-        except Exception as exc:
-            print(f"Thread generated an exception: {exc}")
+            with lock:
+                results.extend(data)
+    except Exception as e:
+        print(f"Error processing stock code {stock_code}: {e}")
 
-# Prepare consistent header order
-all_headers = ['Stock Code'] + sorted(all_headers_set)
+# Create and start threads
+threads = []
+for code in stock_codes:
+    thread = threading.Thread(target=process_stock_code, args=(code,))
+    thread.start()
+    threads.append(thread)
 
-# Aggregate results into rows for CSV
-csv_rows = []
-for res in results:
-    row = {header: '' for header in all_headers}
-    row['Stock Code'] = res['stock_code']
-    for h, v in zip(res['headers'], res['values']):
-        row[h] = v
-    csv_rows.append(row)
+# Wait for all threads to complete
+for thread in threads:
+    thread.join()
 
-with open('all_stocks_output.csv', 'w', newline='', encoding='utf-8') as f:
-    writer = csv.DictWriter(f, fieldnames=all_headers)
-    writer.writeheader()
-    for row in csv_rows:
-        writer.writerow(row)
+# Write results to CSV file
+with open('non_consenting_investors_all.csv', 'w', newline='', encoding='utf-8') as f:
+    writer = csv.writer(f)
+    writer.writerow(['Stock Code', 'Header', 'Value'])
+    writer.writerows(results)
+
+print("All data written to non_consenting_investors_all.csv")
+
