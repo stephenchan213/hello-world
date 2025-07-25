@@ -42,9 +42,9 @@ def process_stock_code(stock_code):
                 headers_divs = datarow.find_all('div', class_='header')
                 values_divs = datarow.find_all('div', class_='value')
     
-                data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
+                'data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
     
-                print(f"{header.text.strip()}: {value.text.strip()}")
+                print(f"{header.text.strip()}: {value.text.strip()}") for header, value in zip(headers_divs, values_divs)]
                 
                 with lock:
                     results.extend(data)
