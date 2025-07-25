@@ -33,18 +33,19 @@ def process_stock_code(stock_code):
         response = requests.post(url, data=payload, headers=headers, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        category = soup.find('div', class_='summary-category')
-        if category and category.text.strip() == "Non-consenting Investor Participants":
-            datarow = category.find_parent('div', class_='ccass-search-datarow')
-            headers_divs = datarow.find_all('div', class_='header')
-            values_divs = datarow.find_all('div', class_='value')
-
-            data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
-
-            print(f"{header.text.strip()}: {value.text.strip()}")
-            
-            with lock:
-                results.extend(data)
+        categories = soup.find('div', class_='summary-category')
+        for category in categories:
+            if category.text.strip() == "Non-consenting Investor Participants":
+                datarow = category.find_parent('div', class_='ccass-search-datarow')
+                headers_divs = datarow.find_all('div', class_='header')
+                values_divs = datarow.find_all('div', class_='value')
+    
+                data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
+    
+                print(f"{header.text.strip()}: {value.text.strip()}")
+                
+                with lock:
+                    results.extend(data)
     except Exception as e:
         print(f"Error processing stock code {stock_code}: {e}")
 
