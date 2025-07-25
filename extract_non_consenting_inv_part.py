@@ -31,7 +31,7 @@ def process_stock_code(stock_code):
         'originalShareholdingDate': '2025/07/21',
         'txtShareholdingDate': '2025/07/21',
         'submit': 'Search',
-    }    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    }
 
     try:
         response = requests.post(url, data=payload, headers=headers, timeout=30)
