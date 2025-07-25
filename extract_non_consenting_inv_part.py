@@ -34,7 +34,7 @@ def process_stock_code(stock_code):
         response = requests.post(url, data=payload, headers=headers, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        table_headers = [('Stock code', header.text.strip()) for header in soup.find('div', class_='ccass-search-headerrow').find_parent('div', class_='container content-container ccass-search-container content-container-reset').find_all('div', class_='header')]
+        table_headers = [('Stock code', soup.find('div', class_='ccass-search-headerrow').find_parent('div', class_='container content-container ccass-search-container content-container-reset').find_all('div', class_='header')]
         print(table_headers)                                                                                        
         
         categories = soup.find_all('div', class_='summary-category')
