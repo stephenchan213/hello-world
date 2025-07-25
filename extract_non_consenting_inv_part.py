@@ -34,9 +34,9 @@ def parse_html(html):
         datarow = category.find_parent('div', class_='ccass-search-datarow')
         headers = datarow.find_all('div', class_='header')
         values = datarow.find_all('div', class_='value')
-            if header and value:
-                headers.append(header.text.strip())
-                values.append(value.text.strip())
+        if header and value:
+            headers.append(header.text.strip())
+            values.append(value.text.strip())
     return headers, values
 
 def process_stock_code(stock_code):
