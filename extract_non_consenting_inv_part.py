@@ -22,7 +22,7 @@ def fetch_html(stock_code):
         'txtShareholdingDate': '2025/07/21',
         'submit': 'Search',
     }
-    response = requests.post(url, data=payload, headers=headers, timeout=30)
+    response = requests.post(url, data=payload, headers=headers, timeout=50)
     return response.text
 
 def parse_html(html):
