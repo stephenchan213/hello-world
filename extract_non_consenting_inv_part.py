@@ -38,7 +38,7 @@ def process_stock_code(stock_code):
         categories = soup.find('div', class_='summary-category')
         for category in categories:
             if category.text.strip() == "Non-consenting Investor Participants":
-                print "hi"
+                print("hi")
                 datarow = category.find_parent('div', class_='ccass-search-datarow')
                 headers_divs = datarow.find_all('div', class_='header')
                 values_divs = datarow.find_all('div', class_='value')
