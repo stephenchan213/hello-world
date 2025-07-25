@@ -38,13 +38,12 @@ def process_stock_code(stock_code):
         categories = soup.find('div', class_='summary-category')
         for category in categories:
             if category.text.strip() == "Non-consenting Investor Participants":
+                print "hi"
                 datarow = category.find_parent('div', class_='ccass-search-datarow')
                 headers_divs = datarow.find_all('div', class_='header')
                 values_divs = datarow.find_all('div', class_='value')
     
-                #data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
-    
-                print(f"{header.text.strip()}: {value.text.strip()}") for header, value in zip(headers_divs, values_divs)
+                data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
                 
                 with lock:
                     results.extend(data)
