@@ -31,6 +31,8 @@ def process_stock_code(stock_code):
 
     try:
         response = requests.post(url, data=payload, headers=headers, timeout=30)
+        with open(f'response{stock_code}.txt', 'w', encoding='utf-8') as file:
+            file.write(response.text)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         categories = soup.find('div', class_='summary-category')
