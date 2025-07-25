@@ -12,6 +12,9 @@ headers = {
     'Origin': 'https://www3.hkexnews.hk',
 }
 
+with open(input_file_path, 'r') as file:
+    stock_codes = file.read().splitlines()
+
 def process_stock_code(stock_code):
     payload = {
         'today': '20250722',
