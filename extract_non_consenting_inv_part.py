@@ -17,6 +17,7 @@ lock = threading.Lock()
 
 # Shared list to store results
 results = []
+table_headers = []
 
 # Function to process each stock code
 def process_stock_code(stock_code):
@@ -33,6 +34,9 @@ def process_stock_code(stock_code):
         response = requests.post(url, data=payload, headers=headers, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        table_headers = [('Stock code', header.text.strip()) for header in soup.find('div', class_='ccass-search-headerrow').find_parent('div', class_='ccass-search-summary-table ').find_all('div, class_='header')
+        print(table_headers)                                                                                        
+        
         categories = soup.find_all('div', class_='summary-category')
         if not categories:
             print(f"[{stock_code}] Table not found.")
