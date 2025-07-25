@@ -12,10 +12,6 @@ headers = {
     'Origin': 'https://www3.hkexnews.hk',
 }
 
-# List of stock codes to process
-with open(input_file_path, 'r') as file:
-    stock_codes = file.read().splitlines()
-
 # Lock for thread-safe writing to shared data
 lock = threading.Lock()
 
@@ -44,7 +40,6 @@ def process_stock_code(stock_code):
             values_divs = datarow.find_all('div', class_='value')
 
             data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
-            print data
             with lock:
                 results.extend(data)
     except Exception as e:
@@ -52,6 +47,11 @@ def process_stock_code(stock_code):
 
 # Create and start threads
 threads = []
+
+# List of stock codes to process
+with open(input_file_path, 'r') as file:
+    stock_codes = file.read().splitlines()
+
 for code in stock_codes:
     thread = threading.Thread(target=process_stock_code, args=(code,))
     thread.start()
