@@ -73,7 +73,7 @@ for thread in threads:
 # Write results to CSV file
 with open('non_consenting_investors_all.csv', 'w', newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
-    table_headers = ['Stock Code'] + table_headers
+    table_headers.insert(0, 'Stock Code')
     writer.writerow(table_headers)
     writer.writerows(results)
 
