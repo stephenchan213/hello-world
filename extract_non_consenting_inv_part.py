@@ -40,6 +40,7 @@ def process_stock_code(stock_code):
             print(f"[{stock_code}] Table not found.")
             return    
         for category in categories:
+                print (category.text.strip())
             if category.text.strip() == "Non-consenting Investor Participants":
                 print("hi")
                 datarow = category.find_parent('div', class_='ccass-search-datarow')
