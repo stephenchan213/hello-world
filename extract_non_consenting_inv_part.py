@@ -35,7 +35,7 @@ def process_stock_code(stock_code):
             file.write(response.text)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        categories = soup.find('div', class_='summary-category')
+        categories = soup.find_all('div', class_='summary-category')
         if not categories:
             print(f"[{stock_code}] Table not found.")
             return    
