@@ -29,10 +29,11 @@ def parse_html(html):
     soup = BeautifulSoup(html, 'html.parser')
     headers = []
     values = []
-    for section in soup.find_all('div', class_='ccass-search-datarow'):
-        for block in section.find_all(['div'], recursive=False):
-            header = block.find('div', class_='header')
-            value = block.find('div', class_='value')
+    category = soup.find('div', class_='summary-category')
+    if category and category.text.strip() == "Non-consenting Investor Participants":
+        datarow = category.find_parent('div', class_='ccass-search-datarow')
+        headers = datarow.find_all('div', class_='header')
+        values = datarow.find_all('div', class_='value')
             if header and value:
                 headers.append(header.text.strip())
                 values.append(value.text.strip())
