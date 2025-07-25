@@ -31,8 +31,6 @@ def process_stock_code(stock_code):
 
     try:
         response = requests.post(url, data=payload, headers=headers, timeout=30)
-        with open(f'response{stock_code}.txt', 'w', encoding='utf-8') as file:
-            file.write(response.text)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         categories = soup.find_all('div', class_='summary-category')
@@ -40,9 +38,7 @@ def process_stock_code(stock_code):
             print(f"[{stock_code}] Table not found.")
             return    
         for category in categories:
-            print (category.text.strip())
             if category.text.strip() == "Non-consenting Investor Participants":
-                print("hi")
                 datarow = category.find_parent('div', class_='ccass-search-datarow')
                 headers_divs = datarow.find_all('div', class_='header')
                 values_divs = datarow.find_all('div', class_='value')
