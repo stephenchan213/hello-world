@@ -35,7 +35,7 @@ def process_stock_code(stock_code):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         table_headers.extend([header.get_text(strip=True) for header in soup.find('div', class_='ccass-search-headerrow').find_parent('div', class_='container content-container ccass-search-container content-container-reset').find_all('div', class_='header')])
-        print(table_headers)                                                                                        
+        #print(table_headers)                                                                                        
         
         categories = soup.find_all('div', class_='summary-category')
         if not categories:
@@ -73,8 +73,7 @@ for thread in threads:
 # Write results to CSV file
 with open('non_consenting_investors_all.csv', 'w', newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
-    table_headers.insert(0, 'Stock Code')
-    writer.writerow(table_headers)
+    writer.writerow(results[1])
     writer.writerows(results)
 
 print("All data written to non_consenting_investors_all.csv")
