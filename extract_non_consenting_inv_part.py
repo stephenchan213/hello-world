@@ -44,7 +44,7 @@ def process_stock_code(stock_code):
             values_divs = datarow.find_all('div', class_='value')
 
             data = [(stock_code, header.text.strip(), value.text.strip()) for header, value in zip(headers_divs, values_divs)]
-
+            print data
             with lock:
                 results.extend(data)
     except Exception as e:
